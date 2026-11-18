@@ -16,7 +16,7 @@ export const SecretMessage = () => {
       </button>
       {isVisible && (
         <p className="text-gray-700 text-xl bg-purple-200 p-3 rounded-xl text-center w-full">
-          You are a piece of shit! 🤪
+          You are a piece of shit! 🤪 hello
         </p>
       )}
     </div>
