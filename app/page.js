@@ -1,4 +1,5 @@
 import Pizza from "./components/Pizza";
+import TodoList from "./components/TodoList";
 
 export default function Home() {
   return (
@@ -11,7 +12,8 @@ export default function Home() {
     //   </div>
     // </main>
     <div className="min-h-screen py-10 px-4">
-      <Pizza />
+      {/* <Pizza /> */}
+      <TodoList />;
     </div>
   );
 }
