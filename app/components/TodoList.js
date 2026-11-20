@@ -5,12 +5,15 @@ import { useState } from "react";
 export default function TodoList() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
+  const [nextId, setNextId] = useState(1);
+  const [filter, setFilter] = useState("ALL");
 
   function addTodo() {
     const trimmed = input.trim();
     if (!trimmed) return;
 
-    setTodos([...todos, { id: Date.now(), text: trimmed, done: false }]);
+    setTodos([...todos, { id: nextId, text: trimmed, done: false }]);
+    setNextId(nextId + 1);
     setInput("");
   }
 
@@ -21,6 +24,12 @@ export default function TodoList() {
       ),
     );
   }
+
+  const visibleTodos = todos.filter((todo) => {
+    if (filter === "DONE") return todo.done === true;
+    if (filter === "PENDING") return todo.done === false;
+    return true;
+  });
 
   return (
     <div className="min-h-screen bg-[#f5f7f9] px-4 py-14 flex items-start justify-center">
@@ -39,25 +48,60 @@ export default function TodoList() {
           </p>
         </div>
 
-        <div className="mb-5 flex items-center gap-3">
+        <div className="mb-4 flex items-center gap-3">
           <input
             type="text"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(event) => setInput(event.target.value)}
             placeholder="Write a new task..."
             className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:border-slate-300 focus:outline-none"
           />
           <button
             type="button"
             onClick={addTodo}
-            className="rounded-xl bg-blue-400 px-5 py-3 text-sm font-medium text-white hover:bg-blue-600"
+            className="rounded-xl bg-[#dce4ec] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#cbd6e2]"
           >
             Add
           </button>
         </div>
+        <div className="mb-5 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setFilter("ALL")}
+            className={
+              filter === "ALL"
+                ? "rounded-lg bg-slate-800 px-3 py-1.5 text-xs font-medium text-white"
+                : "rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-200"
+            }
+          >
+            ALL
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter("DONE")}
+            className={
+              filter === "DONE"
+                ? "rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white"
+                : "rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-200"
+            }
+          >
+            DONE
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter("PENDING")}
+            className={
+              filter === "PENDING"
+                ? "rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-medium text-white"
+                : "rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-200"
+            }
+          >
+            PENDING
+          </button>
+        </div>
 
         <ul className="space-y-2.5">
-          {todos.map((todo) => {
+          {visibleTodos.map((todo) => {
             const isDone = todo.done === true;
 
             return (
@@ -82,15 +126,18 @@ export default function TodoList() {
                     {todo.text}
                   </span>
                 </div>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setTodos(todos.filter((item) => item.id !== todo.id))
-                  }
-                  className="text-base leading-none opacity-60 transition hover:opacity-100"
-                >
-                  🗑️
-                </button>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setTodos(todos.filter((item) => item.id !== todo.id))
+                    }
+                    className="text-base leading-none opacity-60 transition hover:opacity-100"
+                  >
+                    🗑️
+                  </button>
+                </div>
               </li>
             );
           })}
